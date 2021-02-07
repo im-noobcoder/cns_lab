@@ -1,76 +1,52 @@
-#include <stdio.h>
-#include <math.h>
-void genhamcode();
-void makeerror();
-void correcterror();
-int h[12];
+#include<bits/stdc++.h>
+using namespace std;
+
+void printCode(int *arr)
+{
+	printf("Hamming code is : ");
+	for(int i=1; i<8; i++)
+		printf("%d ", *(arr+i));
+	cout<<endl;
+}
+
+void correctError(int *arr)
+{
+	int r1 = (arr[1] + arr[3] + arr[5] + arr[7]) % 2;
+	int r2 = (arr[2] + arr[3] + arr[6] + arr[7]) % 2;
+	int r4 = (arr[4] + arr[5] + arr[6] + arr[7]) % 2;
+	int pos = r4*4 + r2*2 + r1*1;
+	cout<<"Error happened at position "<<pos<<endl;
+	(arr[pos] == 0)? arr[pos] = 1 : arr[pos] = 0;
+	cout<<"After correcting the error\n";
+	printCode(arr);
+}
+
+void makeError(int *arr)
+{
+	int pos;
+	cout<<"Enter position you want to make error [1-7] : ";
+	cin>>pos;
+	(arr[pos] == 0)? arr[pos] = 1 : arr[pos] = 0;
+	cout<<"After making error\n";
+	printCode(arr);
+}
 
 int main()
 {
-    int i, ch;
-    printf("\n enter the message in bits\n");
-    for (i = 1; i < 12; i++)
-        if (i == 3 || i == 5 || i == 6 || i == 7 || i == 9 || i == 10 || i == 11)
-            scanf("%d", &h[i]);
-    for (i = 1; i < 12; i++)
-        printf("%d", h[i]);
-    genhamcode();
-    printf("\n do you want to make error\n(0 or 1)\n");
-    scanf("%d", &ch);
-    if (ch)
-    {
-        makeerror();
-        correcterror();
-    }
-    else
-        printf("\n no error");
-    return (0);
-}
-void genhamcode()
-{
-    int temp, i;
-    temp = h[3] + h[5] + h[7] + h[9] + h[11];
-    (temp % 2 != 0) ? (h[1] = 1) : (h[1] = 0);
-    temp = h[3] + h[6] + h[7] + h[10] + h[11];
-    (temp % 2 != 0) ? (h[2] = 1) : (h[2] = 0);
-    temp = h[5] + h[6] + h[7];
-    (temp % 2 != 0) ? (h[4] = 1) : (h[4] = 0);
-    temp = h[9] + h[10] + h[11];
-    (temp % 2 != 0) ? (h[8] = 1) : (h[8] = 0);
-    printf("\n transmitted codeword is:\n");
-    for (i = 1; i < 12; i++)
-        printf(" %d ", h[i]);
-}
-
-void makeerror()
-{
-    int pos, i;
-    printf("\n enter the position you want to make error\n");
-    scanf("%d", &pos);
-    if (h[pos] == 1)
-        h[pos] = 0;
-    else
-        h[pos] = 1;
-    printf("\n Error occured and the error codeword is\n");
-    for (i = 1; i < 12; i++)
-        printf(" %d ", h[i]);
-}
-
-void correcterror()
-{
-    int r1, r2, r4, r8, i, errpos;
-    r1 = (h[1] + h[3] + h[5] + h[7] + h[9] + h[11]) % 2;
-    r2 = (h[2] + h[3] + h[6] + h[7] + h[10] + h[11]) % 2;
-    r4 = (h[4] + h[5] + h[6] + h[7]) % 2;
-    r8 = (h[8] + h[9] + h[10] + h[11]) % 2;
-    errpos = r8 * 8 + r4 * 4 + r2 * 2 + r1 * 1;
-    printf("\n Error occured in pos %d\n", errpos);
-    printf("\n\n............ correction starts now........\n");
-    if (h[errpos] == 1)
-        h[errpos] = 0;
-    else
-        h[errpos] = 1;
-    printf("\n Original codeword is :");
-    for (i = 1; i < 12; i++)
-        printf(" %d ", h[i]);
+	int arr[8];
+	cout<<"Enter 4 data bits : ";
+	cin>>arr[3]>>arr[5]>>arr[6]>>arr[7];
+	((arr[3] + arr[5] + arr[7]) % 2 == 0)? arr[1] = 0 : arr[1] = 1;
+	((arr[3] + arr[6] + arr[7]) % 2 == 0)? arr[2] = 0 : arr[2] = 1;
+	((arr[5] + arr[6] + arr[7]) % 2 == 0)? arr[4] = 0 : arr[4] = 1;
+	printCode(arr);
+	int ch = 0;
+	printf("\nDo you want to make error?\n1.Yes\t0.No\t");
+	cin>>ch;
+	if(ch)
+	{
+		makeError(arr);
+		correctError(arr);
+	}
+	return 0;
 }
